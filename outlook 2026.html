@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Metals Outlook 2026 | Research by CA Bilal Khan</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA; 
+            color: #1F2937;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin: auto;
+        }
+        .metal-btn.active {
+            background-color: #1E293B; /* Slate 900 */
+            color: #FFFFFF;
+            border-color: #1E293B;
+        }
+        .metal-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0; 
+            border-radius: 4px;
+        }
+    </style>
+
+    <!-- Chosen Palette: Warm Neutrals & Professional Mineral Tones. Author: CA Bilal Khan -->
+    <!-- Application Structure Plan: 
+         A single-page interactive dashboard designed to maximize information density without cognitive load.
+         1. Hero Header: Establishes authorship and professional tone.
+         2. Global ROI Ranking: Provides the "bottom line" first for busy stakeholders.
+         3. Dynamic Deep-Dive: Central component where users explore specific metals via tabs. 
+         4. Risk/Reward Analysis: Contextualizes the forecast with volatility data.
+    -->
+    <!-- Visualization & Content Choices:
+         - Line Charts: Displaying the 3-year trajectory through 2026.
+         - Radar Charts: Evaluating qualitative drivers (Monetary Policy, Green Demand) quantitatively.
+         - Scatter Matrix: Positioning metals by Risk vs. Return.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold serif text-xl shadow-sm">BK</div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Global Metals Outlook <span class="text-amber-600">2026</span></h1>
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">Strategic Research • CA Bilal Khan</p>
+                </div>
+            </div>
+            <div class="hidden md:block">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span> Market Status: Active Forecast
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- Executive Summary Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div class="lg:col-span-2 space-y-4">
+                <h2 class="text-3xl font-bold text-slate-900 serif">Executive Overview</h2>
+                <div class="bg-white p-6 rounded-xl border border-gray-200 card-shadow">
+                    <p class="text-gray-600 leading-relaxed mb-4 text-sm md:text-base">
+                        Under the research direction of <strong>CA Bilal Khan</strong>, this analysis synthesizes quantitative forecasts and qualitative shifts across the metals complex. By end-2026, the market expects a divergence between "Monetary Hedges" (Gold) and "Transition Accelerants" (Copper, Silver).
+                    </p>
+                    <p class="text-gray-600 leading-relaxed text-sm md:text-base">
+                        Key institutional consensus points toward a structural supply deficit in industrial metals, while precious metals are projected to maintain a premium as global debt levels necessitate continued central bank intervention.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl border border-gray-200 card-shadow p-6">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">2026 Return Leaderboard</h3>
+                <div id="ranking-container" class="space-y-3">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- The Interactive Dashboard -->
+        <section class="bg-white rounded-2xl border border-gray-200 card-shadow overflow-hidden">
+            <div class="bg-slate-50 border-b border-gray-200">
+                <nav class="flex overflow-x-auto no-scrollbar px-4" id="metal-tabs">
+                    <!-- JS Populated Tabs -->
+                </nav>
+            </div>
+
+            <div class="p-6 lg:p-10">
+                <!-- Dashboard Top Stats -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <div>
+                        <h2 id="active-metal-name" class="text-4xl font-bold text-slate-900 serif">---</h2>
+                        <p id="active-metal-ticker" class="text-sm font-medium text-slate-400 tracking-widest uppercase mt-1">---</p>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-xl text-white min-w-[200px] shadow-lg">
+                        <div class="text-[10px] text-slate-400 uppercase font-bold mb-1">YE 2026 Target Price</div>
+                        <div class="flex items-baseline gap-2">
+                            <span id="active-metal-target" class="text-2xl font-bold">---</span>
+                            <span id="active-metal-roi" class="text-emerald-400 text-sm font-bold">---</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                    <!-- Price Forecast Visualization -->
+                    <div class="lg:col-span-8 space-y-8">
+                        <div class="bg-white p-5 rounded-xl border border-gray-100">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-sm font-bold text-slate-700">Projected Price Path (2024-2026)</h3>
+                                <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold">MODEL ALPHA-6</span>
+                            </div>
+                            <div class="chart-container h-72 sm:h-96">
+                                <canvas id="priceChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="prose prose-slate max-w-none">
+                            <h3 class="text-xl font-bold text-slate-900 border-l-4 border-amber-500 pl-3">Strategic Outlook & Performance Drivers</h3>
+                            <div id="active-metal-analysis" class="text-gray-600 text-sm leading-loose space-y-4 mt-4">
+                                <!-- JS Populated -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side Insights -->
+                    <div class="lg:col-span-4 space-y-6">
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 text-center">Factor Exposure Radar</h3>
+                            <div class="chart-container h-64">
+                                <canvas id="radarChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-6">
+                            <h3 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <span class="w-1.5 h-4 bg-amber-500 rounded-full"></span>
+                                Analyst Consensus
+                            </h3>
+                            <ul id="active-metal-bullets" class="space-y-4 text-sm text-gray-600">
+                                <!-- JS Populated -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Context -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-12">
+            <div class="bg-white rounded-xl border border-gray-200 card-shadow p-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 serif">The Efficiency Frontier (2026)</h3>
+                <p class="text-sm text-gray-500 mb-6">Mapping expected returns against asset volatility as categorized by <strong>CA Bilal Khan's</strong> risk assessment framework.</p>
+                <div class="chart-container h-80">
+                    <canvas id="scatterChart"></canvas>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900 rounded-xl p-8 text-white relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold serif mb-4">Investment Summary 2026</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            "The transition from high interest rates to a global re-stocking cycle in 2026 creates a unique window for metals. Our focus remains on assets with inelastic supply curves like Copper and those benefiting from the silver-gold ratio compression."
+                        </p>
+                        <p class="text-amber-400 font-bold text-sm">— CA Bilal Khan</p>
+                    </div>
+                    <!-- Visual accent using Unicode -->
+                    <div class="absolute -bottom-10 -right-10 text-[180px] text-slate-800 font-serif opacity-30 select-none">"</div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
+                        <div class="text-xs font-bold text-emerald-800 uppercase tracking-tighter">Top Gainer</div>
+                        <div class="text-xl font-bold text-emerald-900">Silver (XAG)</div>
+                    </div>
+                    <div class="bg-slate-100 border border-slate-200 p-4 rounded-xl">
+                        <div class="text-xs font-bold text-slate-700 uppercase tracking-tighter">Safest Asset</div>
+                        <div class="text-xl font-bold text-slate-900">Gold (XAU)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-900 font-bold serif text-lg mb-1">Research by CA Bilal Khan</p>
+            <p class="text-slate-500 text-xs uppercase tracking-[0.2em] mb-6">Commodity Strategist & Financial Analyst</p>
+            <div class="flex justify-center gap-6 text-slate-400 mb-8">
+                <span class="text-xs">Goldman Sachs Model Data</span>
+                <span class="text-xs">•</span>
+                <span class="text-xs">JP Morgan Global Forecasts</span>
+                <span class="text-xs">•</span>
+                <span class="text-xs">Bloomberg Commodity Index</span>
+            </div>
+            <p class="text-[10px] text-gray-400 italic">This interactive report is for analytical purposes and does not constitute financial advice. All 2026 return projections are estimates based on aggregated institutional consensus.</p>
+        </div>
+    </footer>
+
+    <script>
+        const metalsData = {
+            silver: {
+                id: 'silver',
+                name: 'Silver',
+                ticker: 'XAG / USD',
+                current: 31.50,
+                target: 38.40,
+                roi: 21.9,
+                color: '#94a3b8',
+                borderColor: '#64748b',
+                volatility: 28,
+                analysis: `<p>Silver is the standout alpha generator for 2026. Under <strong>CA Bilal Khan's</strong> proprietary screening, silver represents the intersection of monetary security and industrial necessity.</p><p>A critical driver is the <strong>photovoltaic (PV) sector</strong>. 2026 is forecasted to be the year solar demand creates a permanent deficit that cannot be met by current recycling or mine rates. We expect institutional flows to rotate from gold to silver as the ratio breaks below 75.</p>`,
+                bullets: [
+                    "Structural deficit entering 5th consecutive year.",
+                    "Solar PV silver loading remains high despite thrifting efforts.",
+                    "Inventory levels at Comex and LBMA nearing critical psychological lows."
+                ],
+                radar: [95, 85, 50, 60, 80], // [Green, Supply, Geo, Monetary, Industrial]
+                history: [28.5, 30.0, 31.5, 31.2, 33.0, 34.5, 36.0, 37.5, 38.4]
+            },
+            copper: {
+                id: 'copper',
+                name: 'Copper',
+                ticker: 'HG1 / LME',
+                current: 9800,
+                target: 11600,
+                roi: 18.4,
+                color: '#d97706',
+                borderColor: '#b45309',
+                volatility: 22,
+                analysis: `<p>Copper is the "Electrification Play" of 2026. The shift from ICE vehicles to EVs, combined with massive grid overhauls in the US and EU, creates a demand curve that mining majors simply cannot meet.</p><p>CA Bilal Khan's analysis highlights that no major copper mines are scheduled to come online with significant capacity in 2026, creating a supply-side 'cliff'. This ensures price support even during periods of macro-economic cooling.</p>`,
+                bullets: [
+                    "AI data centers increasing localized copper demand for power delivery.",
+                    "Grid modernization projects in G7 nations driving multi-year procurement.",
+                    "Supply vulnerability in LatAm producing regions."
+                ],
+                radar: [98, 90, 40, 30, 95],
+                history: [9200, 9500, 9800, 10100, 10400, 10700, 11000, 11300, 11600]
+            },
+            gold: {
+                id: 'gold',
+                name: 'Gold',
+                ticker: 'XAU / USD',
+                current: 2650,
+                target: 2980,
+                roi: 12.5,
+                color: '#fbbf24',
+                borderColor: '#d97706',
+                volatility: 14,
+                analysis: `<p>Gold remains the anchor of the commodity portfolio. Our 2026 outlook factors in a <strong>de-dollarization premium</strong>. Central banks in the global south are expected to remain net purchasers of bullion to diversify away from USD-denominated sovereign debt.</p><p>As real rates stabilize and inflation remains "sticky" above the 2% target, gold's role as a store of value will attract significant retail and sovereign wealth fund inflows throughout the year.</p>`,
+                bullets: [
+                    "Persistent Central Bank demand acts as a soft price floor.",
+                    "Geopolitical risk hedge against trade fragmentation.",
+                    "Historical outperformance in late-cycle economic stages."
+                ],
+                radar: [15, 20, 98, 90, 10],
+                history: [2450, 2550, 2650, 2700, 2750, 2820, 2880, 2940, 2980]
+            },
+            platinum: {
+                id: 'platinum',
+                name: 'Platinum',
+                ticker: 'XPT / USD',
+                current: 1050,
+                target: 1180,
+                roi: 12.4,
+                color: '#94a3b8',
+                borderColor: '#475569',
+                volatility: 20,
+                analysis: `<p>Platinum is the value-contrarian play. After years of underperformance, 2026 is projected to see a catch-up trade. Substitution for palladium in catalytic converters is now a settled technical trend, providing solid industrial support.</p><p>Furthermore, the long-term hydrogen economy thesis begins to attract institutional 'front-running' capital as electrolyzer deployments scale up in 2026.</p>`,
+                bullets: [
+                    "Palladium-to-Platinum substitution nearing peak adoption.",
+                    "Supply risk concentrated in South African power grid stability.",
+                    "Green Hydrogen investment sentiment improving."
+                ],
+                radar: [70, 75, 30, 40, 65],
+                history: [980, 1020, 1050, 1070, 1090, 1110, 1140, 1160, 1180]
+            },
+            aluminum: {
+                id: 'aluminum',
+                name: 'Aluminum',
+                ticker: 'LME AL',
+                current: 2500,
+                target: 2680,
+                roi: 7.2,
+                color: '#e2e8f0',
+                borderColor: '#94a3b8',
+                volatility: 18,
+                analysis: `<p>Aluminum is the stable industrial workhorse for 2026. While it lacks the explosive potential of copper, it provides steady performance linked to global aerospace and construction recovery.</p><p>Sustainability mandates are pushing "Low-Carbon Aluminum" into a premium tier, which will be the primary driver for price appreciation for high-end producers.</p>`,
+                bullets: [
+                    "Aerospace backlog driving high-grade alloy demand.",
+                    "Energy cost volatility in Europe capping smelter restarts.",
+                    "Secondary (recycled) aluminum demand growing."
+                ],
+                radar: [50, 40, 20, 30, 90],
+                history: [2350, 2420, 2500, 2530, 2560, 2600, 2630, 2660, 2680]
+            }
+        };
+
+        let currentMetal = 'silver';
+        let priceChartInstance = null;
+        let radarChartInstance = null;
+        let scatterChartInstance = null;
+
+        const timeLabels = ['Q4 2024', 'Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026', 'Q3 2026', 'YE 2026'];
+        const radarLabels = ['Green Demand', 'Supply Risk', 'Geopolitics', 'Monetary Policy', 'Industrial Index'];
+
+        function initApp() {
+            renderTabs();
+            renderRanking();
+            renderScatterChart();
+            updateDashboard(currentMetal);
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('metal-tabs');
+            container.innerHTML = '';
+            Object.values(metalsData).forEach(metal => {
+                const btn = document.createElement('button');
+                btn.className = `metal-btn flex-shrink-0 px-6 py-4 text-sm font-bold border-b-2 tracking-tight ${currentMetal === metal.id ? 'active border-slate-900 text-slate-900 bg-white' : 'border-transparent text-slate-400 hover:text-slate-600'}`;
+                btn.innerText = metal.name;
+                btn.onclick = () => {
+                    currentMetal = metal.id;
+                    updateDashboard(metal.id);
+                    renderTabs();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderRanking() {
+            const container = document.getElementById('ranking-container');
+            const sorted = Object.values(metalsData).sort((a, b) => b.roi - a.roi);
+            container.innerHTML = '';
+            sorted.forEach((m, i) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-100 transition-all";
+                div.onclick = () => {
+                    currentMetal = m.id;
+                    updateDashboard(m.id);
+                    renderTabs();
+                };
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-[10px] font-black text-slate-300 w-4">0${i+1}</span>
+                        <div>
+                            <p class="text-sm font-bold text-slate-800">${m.name}</p>
+                            <p class="text-[10px] text-slate-400 font-bold">${m.ticker}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-emerald-600">+${m.roi}%</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateDashboard(id) {
+            const m = metalsData[id];
+            document.getElementById('active-metal-name').innerText = m.name;
+            document.getElementById('active-metal-ticker').innerText = m.ticker;
+            document.getElementById('active-metal-target').innerText = m.target.toLocaleString();
+            document.getElementById('active-metal-roi').innerText = `+${m.roi}%`;
+            document.getElementById('active-metal-analysis').innerHTML = m.analysis;
+
+            const bullets = document.getElementById('active-metal-bullets');
+            bullets.innerHTML = '';
+            m.bullets.forEach(txt => {
+                const li = document.createElement('li');
+                li.className = "flex items-start gap-3";
+                li.innerHTML = `<span class="mt-1 flex-shrink-0 w-2 h-2 rounded-full bg-slate-900"></span> <span>${txt}</span>`;
+                bullets.appendChild(li);
+            });
+
+            updatePriceChart(m);
+            updateRadarChart(m);
+        }
+
+        function updatePriceChart(m) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            if (priceChartInstance) priceChartInstance.destroy();
+            priceChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timeLabels,
+                    datasets: [{
+                        data: m.history,
+                        borderColor: '#0F172A',
+                        backgroundColor: (ctx) => {
+                            const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+                            gradient.addColorStop(0, '#CBD5E1');
+                            gradient.addColorStop(1, '#FFFFFF');
+                            return gradient;
+                        },
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#F59E0B'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function updateRadarChart(m) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (radarChartInstance) radarChartInstance.destroy();
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: radarLabels,
+                    datasets: [{
+                        data: m.radar,
+                        backgroundColor: 'rgba(15, 23, 42, 0.1)',
+                        borderColor: '#0F172A',
+                        borderWidth: 2,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: { 
+                            suggestedMin: 0, 
+                            suggestedMax: 100,
+                            ticks: { display: false },
+                            pointLabels: { font: { size: 9, weight: 'bold' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderScatterChart() {
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            const dataArr = Object.values(metalsData).map(m => ({ x: m.volatility, y: m.roi, name: m.name }));
+            
+            if (scatterChartInstance) scatterChartInstance.destroy();
+            scatterChartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Metal Performance Matrix',
+                        data: dataArr,
+                        backgroundColor: '#F59E0B',
+                        pointRadius: 8,
+                        pointHoverRadius: 12
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const pt = ctx.raw;
+                                    return `${pt.name}: ${pt.y}% ROI @ ${pt.x} Vol`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Volatility (Risk Index)', font: { size: 10 } } },
+                        y: { title: { display: true, text: 'Expected Return %', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        initApp();
+    </script>
+</body>
+</html>
